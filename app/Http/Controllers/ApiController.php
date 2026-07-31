@@ -16,13 +16,29 @@ class ApiController extends Controller
     public function getPublicData(Request $request)
     {
         $groups = ClassGroup::where('is_deleted', false)->get();
-        $selectedGroupId = $request->get('group_id', $groups->first()?->id);
         
-        $currentGroup = ClassGroup::find($selectedGroupId);
+        if ($request->has('group_id') && $request->get('group_id') !== null && $request->get('group_id') !== '') {
+            $requestedGroupId = $request->get('group_id');
+            $currentGroup = ClassGroup::where('id', $requestedGroupId)->where('is_deleted', false)->first();
 
-        if (!$currentGroup && $groups->count() > 0) {
-            $currentGroup = $groups->first();
+            if (!$currentGroup) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'group_not_found',
+                    'message' => 'El grupo especificado con ID "' . $requestedGroupId . '" no fue encontrado o ha sido eliminado.',
+                    'groups' => $groups->map(function ($g) {
+                        return [
+                            'id' => (string) $g->id,
+                            'name' => $g->name,
+                            'subject' => $g->subject,
+                        ];
+                    })
+                ], 404);
+            }
             $selectedGroupId = $currentGroup->id;
+        } else {
+            $currentGroup = $groups->first();
+            $selectedGroupId = $currentGroup?->id;
         }
 
         $students = Student::where('class_group_id', $selectedGroupId)
