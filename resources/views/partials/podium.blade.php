@@ -5,7 +5,7 @@
     <div class="relative z-10 text-center sm:text-left">
       <div class="inline-flex items-center gap-2 bg-purple-500/20 border border-purple-400/30 px-3 py-1 rounded-full text-xs font-black text-purple-300 uppercase tracking-widest mb-2">
         <i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400"></i>
-        <span>Podio Oficial Kahoot</span>
+        <span>Podio</span>
       </div>
       <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">
         Ranking de Calificaciones - {{ ($currentGroup ?? null)?->name }}
@@ -15,16 +15,7 @@
       </p>
     </div>
 
-    <div class="flex items-center gap-3 relative z-10 shrink-0">
-      <a
-        href="{{ route('dashboard', ['group_id' => ($currentGroup ?? null)?->id, 'tab' => 'reveal']) }}"
-        @click="playFanfareSound()"
-        class="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-pink-600 hover:from-amber-400 hover:to-pink-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-amber-500/25 flex items-center gap-2 transition transform hover:scale-105 cursor-pointer"
-      >
-        <i data-lucide="play" class="w-4 h-4"></i>
-        <span>Iniciar Revelación Kahoot</span>
-      </a>
-    </div>
+    
   </div>
 
   @php
@@ -70,9 +61,10 @@
       @if($top1)
         <div class="flex flex-col items-center mb-4">
           <div class="relative">
-            <div class="absolute -top-7 left-1/2 -translate-x-1/2 text-amber-400 animate-bounce">
-              <i data-lucide="crown" class="w-8 h-8 fill-amber-400"></i>
-            </div>
+          <div class="absolute -top-8 left-1/2 -translate-x-1/2">
+    <i data-lucide="crown" class="w-8 h-8 text-amber-400 fill-amber-400 animate-bounce"></i>
+</div>
+
             <img src="{{ $top1['student']->avatar }}" alt="{{ $top1['student']->name }}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-amber-400 shadow-2xl ring-4 ring-amber-400/20" />
             <div class="absolute -bottom-2 -right-2 bg-amber-400 text-slate-950 font-black text-sm w-8 h-8 rounded-full flex items-center justify-center border-2 border-slate-900 shadow">
               1º

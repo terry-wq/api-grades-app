@@ -72,8 +72,11 @@
                 {{ number_format($item['finalScore'], 1) }}
               </td>
               <td class="p-3.5 text-right space-x-1">
-                <button type="button" @click="selectedStudentDetail = {{ json_encode($item) }}" class="p-1.5 text-purple-400 hover:bg-purple-500/20 rounded-lg transition" title="Ver detalles e incidencias">
+                <button type="button" @click="selectedStudentDetail = {{ json_encode($item) }}; $nextTick(() => { const el = document.querySelector('[x-data]'); if (el) { el._x_dataStack[0].modalTab = 'incidences'; } })" class="p-1.5 text-purple-400 hover:bg-purple-500/20 rounded-lg transition" title="Ver detalles e incidencias">
                   <i data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+                <button type="button" @click="selectedStudentDetail = {{ json_encode($item) }}; $nextTick(() => { const el = document.querySelector('[x-data]'); if (el) { el._x_dataStack[0].modalTab = 'edit'; } })" class="p-1.5 text-indigo-400 hover:bg-indigo-500/20 rounded-lg transition" title="Editar datos del alumno">
+                  <i data-lucide="pencil" class="w-4 h-4"></i>
                 </button>
                 <form method="POST" action="{{ route('students.destroy', $item['student']->id) }}" class="inline" onsubmit="return confirm('¿Seguro de eliminar este alumno?')">
                   @csrf

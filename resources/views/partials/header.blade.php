@@ -54,8 +54,8 @@
       </div>
 
       <!-- Center Navigation Tabs -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 xl:flex items-center gap-1 bg-slate-950/90 p-1.5 rounded-2xl border border-slate-800 w-full xl:w-auto justify-center shadow-inner shrink-0">
-        <!-- Podium Tab (Public + Auth) -->
+      <div class="grid grid-cols-3 xl:flex items-center gap-1 bg-slate-950/90 p-1.5 rounded-2xl border border-slate-800 w-full xl:w-auto justify-center shadow-inner shrink-0">
+        <!-- Podium Tab -->
         <a
           href="{{ route('dashboard', ['group_id' => ($currentGroup ?? null)?->id, 'tab' => 'podium']) }}"
           @click="playClickSound()"
@@ -65,7 +65,17 @@
           <span class="truncate">Podio</span>
         </a>
 
-        <!-- Statistics Tab (Public + Auth) -->
+        <!-- Students List Tab -->
+        <a
+          href="{{ route('dashboard', ['group_id' => ($currentGroup ?? null)?->id, 'tab' => 'list']) }}"
+          @click="playClickSound()"
+          class="flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ ($activeTab ?? 'podium') === 'list' ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-600/30' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50' }}"
+        >
+          <i data-lucide="users" class="w-3.5 h-3.5 text-cyan-400 shrink-0"></i>
+          <span class="truncate">Alumnos</span>
+        </a>
+
+        <!-- Statistics Tab -->
         <a
           href="{{ route('dashboard', ['group_id' => ($currentGroup ?? null)?->id, 'tab' => 'stats']) }}"
           @click="playClickSound()"
@@ -74,33 +84,6 @@
           <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
           <span class="truncate">Estadísticas</span>
         </a>
-
-        @auth
-          <!-- Reveal Tab (Auth Only) -->
-          <a
-            href="{{ route('dashboard', ['group_id' => ($currentGroup ?? null)?->id, 'tab' => 'reveal']) }}"
-            @click="playClickSound()"
-            class="flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ ($activeTab ?? 'podium') === 'reveal' ? 'bg-gradient-to-r from-amber-500 to-pink-600 text-white shadow-md shadow-amber-500/30' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50' }}"
-          >
-            <i data-lucide="play" class="w-3.5 h-3.5 text-amber-300 shrink-0"></i>
-            <span class="truncate">Revelación</span>
-          </a>
-
-          <!-- Students List Tab (Auth Only) -->
-          <a
-            href="{{ route('dashboard', ['group_id' => ($currentGroup ?? null)?->id, 'tab' => 'list']) }}"
-            @click="playClickSound()"
-            class="flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ ($activeTab ?? 'podium') === 'list' ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-md shadow-purple-600/30' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50' }}"
-          >
-            <i data-lucide="users" class="w-3.5 h-3.5 text-cyan-400 shrink-0"></i>
-            <span class="truncate">Alumnos</span>
-          </a>
-        @else
-          <a href="{{ route('login') }}" class="flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold text-slate-500 opacity-60 hover:opacity-100 transition cursor-pointer" title="Inicia sesión para ver la lista de alumnos y evaluaciones">
-            <i data-lucide="lock" class="w-3.5 h-3.5 shrink-0"></i>
-            <span class="truncate">Gestión (Docente)</span>
-          </a>
-        @endauth
       </div>
 
       <!-- Right Action Buttons -->

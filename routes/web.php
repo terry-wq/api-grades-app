@@ -13,48 +13,30 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
-Route::get('/debug', function () {
-    return [
-        'app_url' => config('app.url'),
-        'url_login' => url('/login'),
-        'secure_url' => secure_url('/login'),
-        'is_secure' => request()->isSecure(),
-        'scheme' => request()->getScheme(),
-        'forwarded_proto' => request()->header('x-forwarded-proto'),
-    ];
-});
-
 /*
 |--------------------------------------------------------------------------
-| REST API Routes for React App
+| REST API Routes for React App (Rate limited to 60 req/min)
 |--------------------------------------------------------------------------
 */
 Route::prefix('api')->middleware('throttle:60,1')->group(function () {
     Route::get('/public-data', [ApiController::class, 'getPublicData'])->name('api.public-data');
 });
 
-
-/*
-|--------------------------------------------------------------------------
-| Public Web Routes
-|--------------------------------------------------------------------------
-*/
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-
-// Breeze Auth Routes (Guest Only)
+// Breeze Auth Routes (Guest Only - Rate limited to prevent DDoS/Bruteforce)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+    Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('throttle:5,1');
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
-    Route::post('/register', [RegisteredUserController::class, 'store']);
+    Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('throttle:5,1');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Authenticated Teacher / Admin Panel Routes
+| Authenticated Teacher / Admin Panel Routes (Protected for Professor)
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     // Admin Panel Dashboard & Teacher Profile Settings
@@ -66,8 +48,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/groups/{id}', [DashboardController::class, 'updateGroupSettings'])->name('groups.update');
     Route::delete('/groups/{id}', [AdminController::class, 'destroyGroup'])->name('groups.destroy');
 
-    // Student Management (Create, Edit Avatar, Edit Grade, Delete, Update Evaluations)
+    // Student Management (Create, Edit General Info, Edit Avatar, Edit Grade, Delete, Update Evaluations)
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+    Route::put('/students/{id}', [StudentController::class, 'update'])->name('students.update');
     Route::put('/students/{id}/avatar', [StudentController::class, 'updateAvatar'])->name('students.update-avatar');
     Route::put('/students/{id}/grade', [StudentController::class, 'updateGrade'])->name('students.update-grade');
     Route::put('/students/{id}/evaluations', [StudentController::class, 'updateEvaluationGrades'])->name('students.update-evaluations');
@@ -85,6 +68,7 @@ Route::middleware('auth')->group(function () {
     // Excel & CSV Export / Import Backup
     Route::get('/excel/export/{groupId}', [ExcelController::class, 'exportCsv'])->name('excel.export');
 });
+
 
 
 require __DIR__.'/auth.php';
