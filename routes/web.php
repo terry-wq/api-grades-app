@@ -13,6 +13,17 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
+Route::get('/debug', function () {
+    return [
+        'app_url' => config('app.url'),
+        'url_login' => url('/login'),
+        'secure_url' => secure_url('/login'),
+        'is_secure' => request()->isSecure(),
+        'scheme' => request()->getScheme(),
+        'forwarded_proto' => request()->header('x-forwarded-proto'),
+    ];
+});
+
 /*
 |--------------------------------------------------------------------------
 | REST API Routes for React App
