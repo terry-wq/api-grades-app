@@ -101,9 +101,8 @@ class DashboardController extends Controller
 
         $isAuthenticated = auth()->check();
 
-        // Public guest restriction: Guests can only see 'podium' or 'stats'
         $activeTab = $request->get('tab', 'podium');
-        if (!$isAuthenticated && !in_array($activeTab, ['podium', 'stats'])) {
+        if (!in_array($activeTab, ['podium', 'list', 'stats'])) {
             $activeTab = 'podium';
         }
 
