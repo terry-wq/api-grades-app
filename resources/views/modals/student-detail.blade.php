@@ -59,6 +59,9 @@
       <button type="button" @click="modalTab = 'evaluations'" :class="modalTab === 'evaluations' ? 'bg-amber-500 text-slate-950 shadow font-black' : 'bg-slate-950 text-slate-400 hover:text-white'" class="px-3 py-1.5 rounded-xl text-xs font-bold transition">
         Prácticas y Examen (Calificaciones)
       </button>
+      <button type="button" @click="modalTab = 'edit'" :class="modalTab === 'edit' ? 'bg-indigo-600 text-white shadow font-black' : 'bg-slate-950 text-slate-400 hover:text-white'" class="px-3 py-1.5 rounded-xl text-xs font-bold transition">
+        Editar Información
+      </button>
     </div>
 
     <!-- Tab 1: Incidences List -->
@@ -147,6 +150,71 @@
           </template>
         </div>
       @endif
+    </div>
+
+    <!-- Tab 3: Edit Student Profile / Information -->
+    <div x-show="modalTab === 'edit'" class="space-y-4 pt-2">
+      <form method="POST" :action="'/students/' + (selectedStudentDetail?.student?.id || selectedStudentDetail?.id)" class="space-y-4">
+        @csrf
+        @method('PUT')
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">Nombre Completo del Alumno</label>
+          <input type="text" name="name" required
+                 :value="selectedStudentDetail?.student?.name || selectedStudentDetail?.name || ''"
+                 class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white font-bold focus:outline-none focus:ring-2 focus:ring-purple-500" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Género</label>
+            <select name="gender"
+                    :value="selectedStudentDetail?.student?.gender || selectedStudentDetail?.gender || 'M'"
+                    class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+              <option value="M">Masculino</option>
+              <option value="F">Femenino</option>
+              <option value="O">Otro</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-1">Nota Base Inicial (0.0 - 10.0)</label>
+            <input type="number" step="0.1" min="0" max="10" name="base_grade"
+                   :value="selectedStudentDetail?.student?.base_grade ?? selectedStudentDetail?.base_grade ?? 8.0"
+                   class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-amber-300 font-bold focus:outline-none focus:ring-2 focus:ring-purple-500" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-300 mb-1">URL de Foto / Avatar</label>
+          <div class="flex items-center gap-2">
+            <input type="url" name="avatar" id="editStudentAvatarInput"
+                   :value="selectedStudentDetail?.student?.avatar || selectedStudentDetail?.avatar || ''"
+                   placeholder="https://..."
+                   class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500" />
+          </div>
+          <p class="text-[10px] text-slate-400 mt-1">Puedes personalizar el enlace o usar imágenes en línea (DiceBear, UI Avatars, etc.).</p>
+        </div>
+
+        <div class="flex items-center justify-between pt-3 border-t border-slate-800">
+          <button type="button"
+                  @click="if(confirm('¿Seguro de eliminar este alumno?')) { $refs.deleteStudentForm.submit(); }"
+                  class="px-3.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 font-bold text-xs border border-rose-500/30 transition flex items-center gap-1.5">
+            <i data-lucide="trash-2" class="w-4 h-4 text-rose-400"></i>
+            <span>Eliminar Alumno</span>
+          </button>
+
+          <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-indigo-600/30 transition flex items-center gap-1.5">
+            <i data-lucide="save" class="w-4 h-4"></i>
+            <span>Guardar Perfil de Alumno</span>
+          </button>
+        </div>
+      </form>
+
+      <form x-ref="deleteStudentForm" method="POST" :action="'/students/' + (selectedStudentDetail?.student?.id || selectedStudentDetail?.id)" class="hidden">
+        @csrf
+        @method('DELETE')
+      </form>
     </div>
 
     <div class="flex items-center justify-end pt-3 border-t border-slate-800">
