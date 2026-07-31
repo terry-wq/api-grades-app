@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('practices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('class_group_id')->constrained('class_groups')->onDelete('cascade');
+            $table->foreignUuid('class_group_id')->constrained('class_groups')->onDelete('cascade');
             $table->string('name');
             $table->float('weight')->default(1.0);
             $table->timestamps();

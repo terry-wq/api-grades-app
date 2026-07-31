@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('grade_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
+            $table->foreignUuid('student_id')->constrained('students')->onDelete('cascade');
             $table->string('evaluation_name');
             $table->float('old_score')->nullable();
             $table->float('new_score');

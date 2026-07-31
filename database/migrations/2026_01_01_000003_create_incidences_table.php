@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('incidences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
+            $table->foreignUuid('student_id')->constrained('students')->onDelete('cascade');
             $table->enum('type', ['positive', 'negative']);
             $table->string('title');
             $table->float('points')->default(1.0);
