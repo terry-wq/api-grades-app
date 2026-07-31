@@ -45,6 +45,38 @@ class StudentController extends Controller
     }
 
     /**
+     * Update student general profile info.
+     */
+    public function update(Request $request, $id)
+    {
+        $student = Student::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'avatar' => 'nullable|string|url',
+            'gender' => 'nullable|string|in:M,F,O',
+            'base_grade' => 'nullable|numeric|min:0|max:10',
+        ]);
+
+        $data = [
+            'name' => $request->name,
+            'gender' => $request->gender ?? $student->gender,
+        ];
+
+        if ($request->filled('avatar')) {
+            $data['avatar'] = $request->avatar;
+        }
+
+        if ($request->has('base_grade') && $request->base_grade !== null) {
+            $data['base_grade'] = (float) $request->base_grade;
+        }
+
+        $student->update($data);
+
+        return redirect()->back()->with('success', "Información del alumno {$student->name} actualizada correctamente.");
+    }
+
+    /**
      * Update student evaluation/practice grades & exam grade.
      */
     public function updateEvaluationGrades(Request $request, $id)
