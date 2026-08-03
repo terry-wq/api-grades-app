@@ -8,6 +8,7 @@ return [
 
     'allowed_origins' => [
         'https://students-view-api.vercel.app',
+        'https://ranking-alumnos.vercel.app'
     ],
 
     'allowed_origins_patterns' => [],
