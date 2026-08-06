@@ -26,8 +26,11 @@ Route::prefix('api')->middleware('throttle:60,1')->group(function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('throttle:5,1');
-    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
-    Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('throttle:5,1');
+    //Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::get('/register', function() {
+        return 'Not available';
+    })->name('register');
+    //Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('throttle:5,1');
 });
 
 /*
